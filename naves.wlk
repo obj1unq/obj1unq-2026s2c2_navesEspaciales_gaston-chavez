@@ -10,6 +10,8 @@ class Nave {
 	method prepararViaje() {
 	  velocidad = (velocidad + 15000).min(300000)
 	}
+
+	method encuentroConEnemigo()
 }
 
 
@@ -32,6 +34,11 @@ class NaveDeCarga inherits Nave{
 			self.recibirAmenaza()
 		}
 	}
+
+	override method encuentroConEnemigo() {
+	  self.recibirAmenaza()
+	  self.propulsar()
+	}
 }
 
 class NaveDePasajeros inherits Nave{
@@ -47,6 +54,11 @@ class NaveDePasajeros inherits Nave{
 
 	override method recibirAmenaza() {
 		alarma = true
+	}
+
+	override method encuentroConEnemigo() {
+	  self.recibirAmenaza()
+	  self.propulsar()
 	}
 }
 
@@ -69,6 +81,10 @@ class NaveDeCombate inherits Nave{
 	override method prepararViaje() {
 	  super()
 	  modo.prepararViaje(self)
+	}
+
+	override method encuentroConEnemigo() {
+	  self.recibirAmenaza()
 	}
 }
 
@@ -109,7 +125,7 @@ class NaveResiduosRadioctivas inherits NaveDeCarga {
 	}
 
 	override method prepararViaje() {
-	  super()
+	  super() // utilizo super para indicar que usare lo que tenga el mensaje original en la super clase
 	  self.cerrarseAlVacio()
 	}
 
@@ -120,6 +136,13 @@ class NaveResiduosRadioctivas inherits NaveDeCarga {
 	method cerrarseAlVacio() {
 	  selladaAlVacio = true
 	}
+
+	override method encuentroConEnemigo() {
+	  self.recibirAmenaza()
+	  self.propulsar()
+	}
 }
 
+//respuesta al 1: Si debe reestructurarse con una herencia dado que hay naves que comparten mensajes y lo recomedable seria
+//que haya una Super clase, que en este caso es la nave que contiene esos mensajes para distintas naves que hereden tal mensajes
 
