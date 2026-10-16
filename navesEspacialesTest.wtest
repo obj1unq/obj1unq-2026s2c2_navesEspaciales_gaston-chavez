@@ -37,6 +37,10 @@ describe "Nave de carga" {
 		assert.equals(100, naveLlena.carga())
 	}
 
+	test "Propulsion" {
+		naveVacia.propulsar()
+		assert.equals(20000, naveVacia.velocidad())
+	}
 }
 
 describe "Nave de pasajeros" {
@@ -63,6 +67,16 @@ describe "Nave de pasajeros" {
 	test "recibir amenaza" {
 		naveSinPasajeros.recibirAmenaza()
 		assert.that(naveSinPasajeros.alarma())
+	}
+
+	test "Propulsion" {
+		naveConPasajeros.propulsar()
+		assert.equals(300000, naveConPasajeros.velocidad())
+	}
+
+	test "preparacion viaje nave con pasajeros" {
+		naveConPasajeros.prepararViaje()
+		assert.equals(300000, naveConPasajeros.velocidad())
 	}
 
 }
@@ -94,4 +108,43 @@ describe "Nave de combate" {
 		naveEnAtaque.recibirAmenaza()
 		assert.equals("Enemigo encontrado", naveEnAtaque.ultimoMensaje())
 	}
+
+	test "preparar viaje nave ataque" {
+		naveEnAtaque.prepararViaje()
+		assert.equals("Volviendo a la base", naveEnAtaque.ultimoMensaje())
+		assert.equals(15000, naveEnAtaque.velocidad())
+	}
+
+	test "preparar viaje nave reposo" {
+		naveEnReposo.prepararViaje()
+		assert.equals("Saliendo en misión", naveEnReposo.ultimoMensaje())
+		assert.equals(ataque, naveEnReposo.modo())
+		assert.equals(15000, naveEnReposo.velocidad())
+	}
+}
+
+describe "Nave de residuos radiactivos" {
+	const naveResiduos = new NaveResiduosRadioctivas()
+    test "nave de residiuos radiactivos recibe una amenaza" {
+  		naveResiduos.velocidad(100)
+		naveResiduos.carga(5000)
+		naveResiduos.cerrarseAlVacio()
+		naveResiduos.recibirAmenaza()
+  		assert.equals(0, naveResiduos.velocidad())
+  		assert.equals(5000, naveResiduos.carga())
+    }
+  
+    test "nave de residiuos radiactivos no recibe una amenaza" {
+		naveResiduos.velocidad(1000)
+		naveResiduos.carga(5000)
+  		assert.equals(1000, naveResiduos.velocidad())
+  		assert.equals(5000, naveResiduos.carga())
+    }
+
+	test "preparar el viaje con nave" {
+		naveResiduos.prepararViaje()
+		assert.equals(15000, naveResiduos.velocidad())
+		assert.that(naveResiduos.selladaAlVacio())
+	}
+
 }

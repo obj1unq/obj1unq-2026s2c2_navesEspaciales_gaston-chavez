@@ -1,13 +1,27 @@
-class NaveDeCarga {
-
+class Nave {
 	var property velocidad = 0
+	
+	method recibirAmenaza()
+
+	method propulsar() {
+	  velocidad = (velocidad + 20000).min(300000)
+	}
+
+	method prepararViaje() {
+	  velocidad = (velocidad + 15000).min(300000)
+	}
+}
+
+
+class NaveDeCarga inherits Nave{
+
 	var property carga = 0
 
 	method sobrecargada() = carga > 100000
 
 	method excedidaDeVelocidad() = velocidad > 100000
 
-	method recibirAmenaza() {
+	override method recibirAmenaza() {
 		carga = 0
 	}
 	
@@ -18,12 +32,10 @@ class NaveDeCarga {
 			self.recibirAmenaza()
 		}
 	}
-
 }
 
-class NaveDePasajeros {
+class NaveDePasajeros inherits Nave{
 
-	var property velocidad = 0
 	var property alarma = false
 	const cantidadDePasajeros = 0
 
@@ -33,14 +45,12 @@ class NaveDePasajeros {
 
 	method estaEnPeligro() = velocidad > self.velocidadMaximaPermitida() or alarma
 
-	method recibirAmenaza() {
+	override method recibirAmenaza() {
 		alarma = true
 	}
-
 }
 
-class NaveDeCombate {
-	var property velocidad = 0
+class NaveDeCombate inherits Nave{
 	var property modo = reposo
 	const property mensajesEmitidos = []
 
@@ -52,10 +62,14 @@ class NaveDeCombate {
 
 	method estaInvisible() = velocidad < 10000 and modo.invisible()
 
-	method recibirAmenaza() {
+	override method recibirAmenaza() {
 		modo.recibirAmenaza(self)
 	}
 
+	override method prepararViaje() {
+	  super()
+	  modo.prepararViaje(self)
+	}
 }
 
 object reposo {
@@ -64,6 +78,11 @@ object reposo {
 
 	method recibirAmenaza(nave) {
 		nave.emitirMensaje("¡RETIRADA!")
+	}
+
+	method prepararViaje(nave) {
+		nave.emitirMensaje("Saliendo en misión")
+		nave.modo(ataque)
 	}
 
 }
@@ -76,4 +95,31 @@ object ataque {
 		nave.emitirMensaje("Enemigo encontrado")
 	}
 
+	method prepararViaje(nave) {
+		nave.emitirMensaje("Volviendo a la base")
+	}
+
 }
+
+class NaveResiduosRadioctivas inherits NaveDeCarga {
+	var property selladaAlVacio = false
+	
+	override method recibirAmenaza() {
+	  self.reducirVelocidad()
+	}
+
+	override method prepararViaje() {
+	  super()
+	  self.cerrarseAlVacio()
+	}
+
+	method reducirVelocidad() {
+	  velocidad = 0
+	}
+
+	method cerrarseAlVacio() {
+	  selladaAlVacio = true
+	}
+}
+
+
